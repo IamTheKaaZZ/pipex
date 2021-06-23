@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 15:59:35 by bcosters          #+#    #+#             */
-/*   Updated: 2021/06/18 17:11:17 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/06/23 12:43:06 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,5 +137,6 @@ double	ft_roundf(double nb, int decimals);
 t_bool	ft_almost_eq_rel(float a, float b, float maxreldiff);
 long	ft_atol(const char *numstr);
 char	*ft_strjoin_realloc(char *s1, const char *s2);
+void	ft_str_array_del(char ***str_array);
 
 #endif

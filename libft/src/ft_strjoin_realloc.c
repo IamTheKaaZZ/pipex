@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/02 15:13:02 by bcosters          #+#    #+#             */
-/*   Updated: 2021/06/02 15:42:20 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/06/23 12:46:15 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 
 /*
 **	ft_strjoin but you realloc the joined string, so s1 gets free'd
+**	USAGE: s1 = ft_strjoin_realloc(s1, s2);
+**	=> This will overwrite the memory of s1
+**		=> therefore free its previous memory
 */
 
 char	*ft_strjoin_realloc(char *s1, const char *s2)
