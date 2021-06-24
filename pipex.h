@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/22 09:54:45 by bcosters          #+#    #+#             */
-/*   Updated: 2021/06/24 15:46:07 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/06/24 17:31:34 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,16 @@ typedef struct s_pipex
 	int		fd_input;
 	int		fd_out;
 	int		pipe[2];
-	int		pid;
+	int		pid_in;
+	int		pid_cmd1;
+	int		pid_cmd2;
+	int		pid_out;
 	int		wstatus;
 }			t_pipex;
 
 void	init_data(t_pipex *p);
 void	clear_data(t_pipex *p);
+void	reset_pipe(t_pipex *p);
 
 /*
 **	Error handling
@@ -62,5 +66,6 @@ void	program_errors(t_pipex *p, char *errname, t_bool stop);
 
 void	get_commands(t_pipex *p);
 char	*read_input_file(t_pipex *p);
+void	write_input(t_pipex *p);
 
 #endif

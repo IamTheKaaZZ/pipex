@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   read_input.c                                       :+:      :+:    :+:   */
+/*   read_write_input.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/06/24 15:40:16 by bcosters          #+#    #+#             */
-/*   Updated: 2021/06/24 15:45:47 by bcosters         ###   ########.fr       */
+/*   Created: 2021/06/24 16:08:20 by bcosters          #+#    #+#             */
+/*   Updated: 2021/06/24 16:09:34 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,4 +35,16 @@ char	*read_input_file(t_pipex *p)
 	}
 	close(p->fd_input);
 	return (str);
+}
+
+void	write_input(t_pipex *p)
+{
+	char	*str;
+	int		size;
+
+	str = NULL;
+	str = read_input_file(p);
+	size = ft_strlen(str) + 1;
+	write(p->pipe[1], str, size);
+	ft_strdel(&str);
 }

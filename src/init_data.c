@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/23 15:15:10 by bcosters          #+#    #+#             */
-/*   Updated: 2021/06/24 12:24:47 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/06/24 17:32:13 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,10 @@ void	init_data(t_pipex *p)
 	p->fd_out = -1;
 	p->pipe[0] = -1;
 	p->pipe[1] = -1;
-	p->pid = -1;
+	p->pid_in = -1;
+	p->pid_out = -1;
+	p->pid_cmd1 = -1;
+	p->pid_cmd2 = -1;
 }
 
 void	clear_data(t_pipex *p)
@@ -43,4 +46,14 @@ void	clear_data(t_pipex *p)
 		close (p->pipe[0]);
 	else if (p->pipe[1] != -1)
 		close (p->pipe[1]);
+}
+
+void	reset_pipe(t_pipex *p)
+{
+	if (p->pipe[0] != -1)
+		close (p->pipe[0]);
+	else if (p->pipe[1] != -1)
+		close (p->pipe[1]);
+	p->pipe[0] = -1;
+	p->pipe[1] = -1;
 }
