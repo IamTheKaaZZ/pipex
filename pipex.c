@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/23 11:21:57 by bcosters          #+#    #+#             */
-/*   Updated: 2021/06/24 13:21:02 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/06/24 15:47:22 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,10 @@ void	check_input(t_pipex *p, int argc, char **argv, char **envp)
 	if (access(argv[1], R_OK) == -1)
 		usage_error(p, "NO PERMISSION", TRUE);
 	find_command_paths(p, argc, argv, envp);
-	p->fd_input = open(argv[0], O_RDONLY);
+	p->fd_input = open(argv[1], O_RDONLY);
 	if (p->fd_input == -1)
 		usage_error(p, "OPENING INPUT FILE", TRUE);
-	p->fd_out = open(argv[0], O_WRONLY | O_CREAT, 0777);
+	p->fd_out = open(argv[argc - 1], O_WRONLY | O_CREAT, 0777);
 	if (p->fd_out == -1)
 		usage_error(p, "OPENING OUTPUT FILE", TRUE);
 	p->argc = argc;
@@ -56,37 +56,37 @@ int	main(int argc, char **argv, char **envp)
 	init_data(&p);
 	check_input(&p, argc, argv, envp);
 	get_commands(&p);
-	int	i = -1;
-	int	j = -1;
-	while (p.commands[++i])
-	{
-		j = -1;
-		while (p.commands[i][++j])
-			printf("%s ", p.commands[i][j]);
-		printf("\n");
-	}
-	i = -1;
+	char	*str;
+	int		size;
+
+	str = NULL;
+	int i = -1;
 	while (++i < argc)
 	{
 		if (i == 1)
 		{
-			//redirect the input file fd to stdin
-			dup2(p.fd_input, STDIN_FILENO);
-			close (p.fd_input);
-			execve(p.commands[0][0], p.commands[0], p.envp);
-			/*p.pid = fork();
+			p.pid = fork();
 			if (p.pid == -1)
 				program_errors(&p, "FORKING", TRUE);
 			if (p.pid == 0)
 			{
-				dup2(p.pipe[1], p.fd_input);
 				close(p.pipe[1]);
-				close(p.pipe[2]);
-
-			}*/
+				dup2(p.pipe[0], STDIN_FILENO);
+				close(p.pipe[0]);
+				execve(p.commands[0][0], p.commands[0], p.envp);
+			}
+			else
+			{
+				close(p.pipe[0]);
+				str = read_input_file(&p);
+				size = ft_strlen(str) + 1;
+				write(p.pipe[1], str, size);
+				ft_strdel(&str);
+				close(p.pipe[1]);
+				waitpid(p.pid, &p.wstatus, 0);
+			}
 		}
 	}
-
 	clear_data(&p);
 	exit(EXIT_SUCCESS);
 }

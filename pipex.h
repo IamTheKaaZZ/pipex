@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/22 09:54:45 by bcosters          #+#    #+#             */
-/*   Updated: 2021/06/24 12:00:21 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/06/24 15:46:07 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,5 +61,6 @@ void	program_errors(t_pipex *p, char *errname, t_bool stop);
 */
 
 void	get_commands(t_pipex *p);
+char	*read_input_file(t_pipex *p);
 
 #endif
