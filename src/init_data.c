@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/23 15:15:10 by bcosters          #+#    #+#             */
-/*   Updated: 2021/06/23 15:50:54 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/06/24 10:51:55 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,9 @@ void	init_data(t_input *i)
 	i->env_paths = NULL;
 	i->fd_input = -1;
 	i->fd_out = -1;
-	i->pipes = NULL;
+	i->pipe[0] = -1;
+	i->pipe[1] = -1;
+	i->pid = -1;
 }
 
 void	clear_data(t_input *i)
@@ -31,4 +33,8 @@ void	clear_data(t_input *i)
 		close(i->fd_input);
 	else if (i->fd_out != -1)
 		close(i->fd_out);
+	else if (i->pipe[0] != -1)
+		close (i->pipe[0]);
+	else if (i->pipe[1] != -1)
+		close (i->pipe[1]);
 }

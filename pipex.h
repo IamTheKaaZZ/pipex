@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/22 09:54:45 by bcosters          #+#    #+#             */
-/*   Updated: 2021/06/23 16:56:58 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/06/24 10:39:57 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ typedef struct s_input
 	char	**commands;
 	int		fd_input;
 	int		fd_out;
-	int		**pipes;
+	int		pipe[2];
+	int		pid;
 }		t_input;
 
 void	init_data(t_input *in);
