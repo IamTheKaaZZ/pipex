@@ -6,13 +6,13 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/23 11:52:17 by bcosters          #+#    #+#             */
-/*   Updated: 2021/06/23 16:56:38 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/06/24 12:23:12 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
 
-void	usage_error(t_input *in, char *usage_name, t_bool stop)
+void	usage_error(t_pipex *p, char *usage_name, t_bool stop)
 {
 	if (ft_strequal(usage_name, "USAGE"))
 	{
@@ -29,22 +29,21 @@ void	usage_error(t_input *in, char *usage_name, t_bool stop)
 		perror(usage_name);
 	else if (ft_strequal("OPENING INPUT FILE", usage_name))
 		perror(usage_name);
-	else if (ft_strequal("CREATING/OVERWRITING OUTPUT FILE", usage_name))
+	else if (ft_strequal("OPENING OUTPUT FILE", usage_name))
 		perror(usage_name);
 	if (stop == TRUE)
 	{
-		clear_data(in);
+		clear_data(p);
 		exit(EXIT_FAILURE);
 	}
 }
 
-void	program_errors(t_input *in, char *errname, t_bool stop)
+void	program_errors(t_pipex *p, char *errname, t_bool stop)
 {
-	if (ft_strequal(errname, "MALLOC"))
-		perror(errname);
+	perror(errname);
 	if (stop == TRUE)
 	{
-		clear_data(in);
+		clear_data(p);
 		exit(EXIT_FAILURE);
 	}
 }

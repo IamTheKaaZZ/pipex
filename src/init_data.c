@@ -6,35 +6,41 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/23 15:15:10 by bcosters          #+#    #+#             */
-/*   Updated: 2021/06/24 10:51:55 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/06/24 12:24:47 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
 
-void	init_data(t_input *i)
+void	init_data(t_pipex *p)
 {
-	i->commands = NULL;
-	i->env_paths = NULL;
-	i->fd_input = -1;
-	i->fd_out = -1;
-	i->pipe[0] = -1;
-	i->pipe[1] = -1;
-	i->pid = -1;
+	p->commands = NULL;
+	p->env_paths = NULL;
+	p->fd_input = -1;
+	p->fd_out = -1;
+	p->pipe[0] = -1;
+	p->pipe[1] = -1;
+	p->pid = -1;
 }
 
-void	clear_data(t_input *i)
+void	clear_data(t_pipex *p)
 {
-	if (i->commands)
-		ft_str_array_del(&i->commands);
-	else if (i->env_paths)
-		ft_str_array_del(&i->env_paths);
-	else if (i->fd_input != -1)
-		close(i->fd_input);
-	else if (i->fd_out != -1)
-		close(i->fd_out);
-	else if (i->pipe[0] != -1)
-		close (i->pipe[0]);
-	else if (i->pipe[1] != -1)
-		close (i->pipe[1]);
+	int	i;
+
+	if (p->commands)
+	{
+		i = -1;
+		while (p->commands[++i])
+			ft_str_array_del(&p->commands[i]);
+	}
+	else if (p->env_paths)
+		ft_str_array_del(&p->env_paths);
+	else if (p->fd_input != -1)
+		close(p->fd_input);
+	else if (p->fd_out != -1)
+		close(p->fd_out);
+	else if (p->pipe[0] != -1)
+		close (p->pipe[0]);
+	else if (p->pipe[1] != -1)
+		close (p->pipe[1]);
 }
