@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/22 09:54:45 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/12 15:11:50 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/12 15:48:33 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ typedef struct s_pipex
 	char	***commands;
 	int		fd_input;
 	int		fd_out;
-	int		pipe[2];
+	int		pipe1[2];
 	int		pipe2[2];
 	pid_t	pid_in;
 	pid_t	pid_cmd;
@@ -54,7 +54,7 @@ typedef struct s_pipex
 
 void	init_data(t_pipex *p);
 void	clear_data(t_pipex *p);
-void	open_pipe(t_pipex *p);
+void	open_pipe(t_pipex *p, int fd[2]);
 void	close_pipe(int *pipe);
 
 /*
@@ -73,6 +73,6 @@ void	wait_error_check(t_pipex *p, pid_t pid);
 void	get_commands(t_pipex *p);
 char	*read_from_fd(t_pipex *p, int fd);
 void	write_input_to_cmd(t_pipex *p);
-void	write_cmd_to_output(t_pipex *p, int argc);
+void	write_cmd_to_output(t_pipex *p, int argc, int readpipe[2]);
 
 #endif

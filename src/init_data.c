@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/23 15:15:10 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/12 15:12:47 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/12 15:44:10 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ void	init_data(t_pipex *p)
 	p->env_paths = NULL;
 	p->fd_input = -1;
 	p->fd_out = -1;
-	p->pipe[0] = -1;
-	p->pipe[1] = -1;
+	p->pipe1[0] = -1;
+	p->pipe1[1] = -1;
 	p->pipe2[0] = -1;
 	p->pipe2[1] = -1;
 	p->pid_in = -1;
@@ -31,10 +31,10 @@ void	init_data(t_pipex *p)
 **	Open the pipe for the processes
 */
 
-void	open_pipe(t_pipex *p)
+void	open_pipe(t_pipex *p, int fd[2])
 {
-	if (pipe(p->pipe) == ERROR)
-		program_errors(p, "OPENING PIPE 1", TRUE);
+	if (pipe(fd) == ERROR)
+		program_errors(p, "OPENING PIPE", TRUE);
 }
 
 void	clear_data(t_pipex *p)
@@ -51,7 +51,8 @@ void	clear_data(t_pipex *p)
 		ft_str_array_del(&p->env_paths);
 	close(p->fd_input);
 	close(p->fd_out);
-	close_pipe(p->pipe);
+	close_pipe(p->pipe1);
+	close_pipe(p->pipe2);
 }
 
 void	close_pipe(int *pipe)

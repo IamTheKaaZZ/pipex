@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/23 11:21:57 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/12 15:02:50 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/12 16:02:05 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,17 +53,19 @@ int	main(int argc, char **argv, char **envp)
 	init_data(&p);
 	check_input(&p, argc, argv, envp);
 	get_commands(&p);
-	open_pipe(&p);
+	open_pipe(&p, p.pipe1);
+	open_pipe(&p, p.pipe2);
 	p.pid_in = fork();
 	if (p.pid_in == ERROR)
 		program_errors(&p, "FORKING", TRUE);
 	if (p.pid_in == CHILD_PROCESS)
 		write_input_to_cmd(&p);
+	//ADD argc > 5 check (even amount of commands => pipe2 is readpipe, else readpipe is 1)
 	p.pid_out = fork();
 	if (p.pid_out == ERROR)
 		program_errors(&p, "FORKING", TRUE);
 	if (p.pid_out == CHILD_PROCESS)
-		write_cmd_to_output(&p, argc);
+		write_cmd_to_output(&p, argc, p.pipe1);
 	clear_data(&p);
 	wait_error_check(&p, p.pid_in);
 	wait_error_check(&p, p.pid_out);
