@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/23 11:21:57 by bcosters          #+#    #+#             */
-/*   Updated: 2021/06/24 17:51:35 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/12 15:02:50 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,16 +30,16 @@ void	check_input(t_pipex *p, int argc, char **argv, char **envp)
 {
 	if (argc < 5)
 		usage_error(p, "USAGE", TRUE);
-	if (access(argv[1], F_OK) == -1)
+	if (access(argv[1], F_OK) == ERROR)
 		usage_error(p, "NO INPUT FILE", TRUE);
-	if (access(argv[1], R_OK) == -1)
+	if (access(argv[1], R_OK) == ERROR)
 		usage_error(p, "NO PERMISSION", TRUE);
 	find_command_paths(p, argc, argv, envp);
 	p->fd_input = open(argv[1], O_RDONLY);
-	if (p->fd_input == -1)
+	if (p->fd_input == ERROR)
 		usage_error(p, "OPENING INPUT FILE", TRUE);
 	p->fd_out = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0777);
-	if (p->fd_out == -1)
+	if (p->fd_out == ERROR)
 		usage_error(p, "OPENING OUTPUT FILE", TRUE);
 	p->argc = argc;
 	p->argv = argv;
@@ -48,77 +48,24 @@ void	check_input(t_pipex *p, int argc, char **argv, char **envp)
 
 int	main(int argc, char **argv, char **envp)
 {
-	t_pipex p;
+	t_pipex	p;
 
 	init_data(&p);
 	check_input(&p, argc, argv, envp);
 	get_commands(&p);
-	//open the pipe
-	if (pipe(p.pipe) == -1)
-		program_errors(&p, "OPENING PIPE", TRUE);
+	open_pipe(&p);
 	p.pid_in = fork();
-	if (p.pid_in == -1)
+	if (p.pid_in == ERROR)
 		program_errors(&p, "FORKING", TRUE);
-	if (p.pid_in == 0)
-	{
-		close(p.pipe[1]);
-		dup2(p.pipe[0], STDIN_FILENO);
-		close(p.pipe[0]);
-		if (execve(p.commands[0][0], p.commands[0], p.envp) == -1)
-			program_errors(&p, "EXECUTION ERROR", TRUE);
-	}
-	close(p.pipe[0]);
-	write_input(&p);
-	close(p.pipe[1]);
-	if (waitpid(p.pid_in, &p.wstatus, 0) == -1)
-		program_errors(&p, "WAIT 1", TRUE);
-	if (WIFEXITED(p.wstatus) != TRUE)
-	{
-		if (WEXITSTATUS(p.wstatus) != 0)
-			program_errors(&p, "COMMAND FAIL", TRUE);
-	}
-
-	//open the pipe
-	if (pipe(p.pipe) == -1)
-		program_errors(&p, "OPENING PIPE", TRUE);
-	p.pid_cmd1 = fork();
-	if (p.pid_cmd1 == -1)
+	if (p.pid_in == CHILD_PROCESS)
+		write_input_to_cmd(&p);
+	p.pid_out = fork();
+	if (p.pid_out == ERROR)
 		program_errors(&p, "FORKING", TRUE);
-	if (p.pid_cmd1 == 0)
-	{
-		close(p.pipe[0]);
-		dup2(p.pipe[1], STDOUT_FILENO);
-		close(p.pipe[1]);
-		if (execve(p.commands[0][0], p.commands[0], p.envp) == -1)
-			program_errors(&p, "EXECUTION ERROR", TRUE);
-	}
-	p.pid_cmd2 = fork();
-	if (p.pid_cmd2 == -1)
-		program_errors(&p, "FORKING", TRUE);
-	if (p.pid_cmd2 == 0)
-	{
-		close(p.pipe[1]);
-		dup2(p.pipe[0], STDIN_FILENO);
-		close(p.pipe[0]);
-		if (execve(p.commands[1][0], p.commands[1], p.envp) == -1)
-			program_errors(&p, "EXECUTION ERROR", TRUE);
-	}
-	close(p.pipe[0]);
-	close(p.pipe[1]);
-	if (waitpid(p.pid_cmd1, &p.wstatus, 0) == -1)
-		program_errors(&p, "WAIT 2", TRUE);
-	if (WIFEXITED(p.wstatus) != TRUE)
-	{
-		if (WEXITSTATUS(p.wstatus) != 0)
-			program_errors(&p, "COMMAND FAIL", TRUE);
-	}
-	if (waitpid(p.pid_cmd2, &p.wstatus, 0) == -1)
-		program_errors(&p, "WAIT 3", TRUE);
-	if (WIFEXITED(p.wstatus) != TRUE)
-	{
-		if (WEXITSTATUS(p.wstatus) != 0)
-			program_errors(&p, "COMMAND FAIL", TRUE);
-	}
+	if (p.pid_out == CHILD_PROCESS)
+		write_cmd_to_output(&p, argc);
 	clear_data(&p);
+	wait_error_check(&p, p.pid_in);
+	wait_error_check(&p, p.pid_out);
 	exit(EXIT_SUCCESS);
 }

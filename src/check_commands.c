@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/23 16:30:27 by bcosters          #+#    #+#             */
-/*   Updated: 2021/06/24 12:56:29 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/12 15:00:50 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static void	check_path_variable(t_pipex *p, char **args, char *err)
 	i = -1;
 	while (p->env_paths[++i])
 	{
-			cmd_path = ft_strjoin(p->env_paths[i], args[0]);
+		cmd_path = ft_strjoin(p->env_paths[i], args[0]);
 		if (access(cmd_path, X_OK) != -1)
 		{
 			ft_strdel(&cmd_path);

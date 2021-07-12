@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/23 11:52:17 by bcosters          #+#    #+#             */
-/*   Updated: 2021/06/24 12:23:12 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/12 12:50:47 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,5 +45,16 @@ void	program_errors(t_pipex *p, char *errname, t_bool stop)
 	{
 		clear_data(p);
 		exit(EXIT_FAILURE);
+	}
+}
+
+void	wait_error_check(t_pipex *p, pid_t pid)
+{
+	if (waitpid(pid, &p->wstatus, 0) == ERROR)
+		program_errors(p, "WAIT", TRUE);
+	if (WIFEXITED(p->wstatus) != TRUE)
+	{
+		if (WEXITSTATUS(p->wstatus) != 0)
+			program_errors(p, "COMMAND FAIL", TRUE);
 	}
 }
