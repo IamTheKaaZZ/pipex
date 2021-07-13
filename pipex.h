@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/22 09:54:45 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/12 15:48:33 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/13 13:24:37 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ typedef struct s_pipex
 	char	**envp;
 	char	**env_paths;
 	char	***commands;
+	int		n_cmds;
 	int		fd_input;
 	int		fd_out;
 	int		pipe1[2];
@@ -73,6 +74,8 @@ void	wait_error_check(t_pipex *p, pid_t pid);
 void	get_commands(t_pipex *p);
 char	*read_from_fd(t_pipex *p, int fd);
 void	write_input_to_cmd(t_pipex *p);
-void	write_cmd_to_output(t_pipex *p, int argc, int readpipe[2]);
+void	write_cmd_to_output(t_pipex *p, int readfd);
+void	cmd_pipe1_to_pipe2(t_pipex *p, int cmd_i);
+void	cmd_pipe2_to_pipe1(t_pipex *p, int cmd_i);
 
 #endif

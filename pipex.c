@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/23 11:21:57 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/12 16:02:05 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/13 14:05:33 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,25 +49,53 @@ void	check_input(t_pipex *p, int argc, char **argv, char **envp)
 int	main(int argc, char **argv, char **envp)
 {
 	t_pipex	p;
+	int		i;
+	int		prev_pipe;
 
 	init_data(&p);
 	check_input(&p, argc, argv, envp);
 	get_commands(&p);
 	open_pipe(&p, p.pipe1);
-	open_pipe(&p, p.pipe2);
 	p.pid_in = fork();
 	if (p.pid_in == ERROR)
 		program_errors(&p, "FORKING", TRUE);
 	if (p.pid_in == CHILD_PROCESS)
 		write_input_to_cmd(&p);
-	//ADD argc > 5 check (even amount of commands => pipe2 is readpipe, else readpipe is 1)
+	wait_error_check(&p, p.pid_in);
+	i = 0;
+	prev_pipe = p.pipe1[READ_END];
+	while (++i < p.n_cmds - 1)
+	{
+		open_pipe(&p, p.pipe2);
+		p.pid_cmd = fork();
+		if (p.pid_cmd == ERROR)
+			program_errors(&p, "FORKING CMD", TRUE);
+		if (p.pid_cmd == CHILD_PROCESS)
+		{
+			if (prev_pipe != STDIN_FILENO)
+			{
+				dup2(prev_pipe, STDIN_FILENO);
+				close_pipe(p.pipe1);
+			}
+			dup2(p.pipe2[WRITE_END], STDOUT_FILENO);
+			close_pipe(p.pipe2);
+			if (execve(p.commands[i][0], p.commands[i], p.envp) == ERROR)
+				program_errors(&p, "EXECUTION ERROR", TRUE);
+		}
+		close(prev_pipe);
+		close(p.pipe2[WRITE_END]);
+		prev_pipe = p.pipe2[READ_END];
+		printf("i = %d and readfd = %d\n", i, prev_pipe);
+	}
+	close_pipe(p.pipe1);
+	close(p.pipe2[WRITE_END]);
+		printf("readfd = %d\n", p.pipe2[READ_END]);
 	p.pid_out = fork();
 	if (p.pid_out == ERROR)
 		program_errors(&p, "FORKING", TRUE);
 	if (p.pid_out == CHILD_PROCESS)
-		write_cmd_to_output(&p, argc, p.pipe1);
+		write_cmd_to_output(&p, p.pipe2[READ_END]);
 	clear_data(&p);
-	wait_error_check(&p, p.pid_in);
 	wait_error_check(&p, p.pid_out);
 	exit(EXIT_SUCCESS);
 }

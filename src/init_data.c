@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/23 15:15:10 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/12 15:44:10 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/13 11:35:01 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ void	init_data(t_pipex *p)
 {
 	p->commands = NULL;
 	p->env_paths = NULL;
+	p->n_cmds = 0;
 	p->fd_input = -1;
 	p->fd_out = -1;
 	p->pipe1[0] = -1;

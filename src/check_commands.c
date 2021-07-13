@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/23 16:30:27 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/12 15:00:50 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/13 11:35:17 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,7 @@ void	get_commands(t_pipex *p)
 			program_errors(p, "COMMAND SPLIT MALLOC", TRUE);
 		update_command_path(p, &cmd_args[0]);
 		p->commands[++j] = cmd_args;
+		p->n_cmds++;
 	}
 	ft_str_array_del(&p->env_paths);
 }

@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/12 11:29:19 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/12 15:56:02 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/13 14:08:14 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,15 +75,15 @@ void	write_input_to_cmd(t_pipex *p)
 **	ALWAYS executes the LAST command in the list -> argc - 4
 */
 
-void	write_cmd_to_output(t_pipex *p, int argc, int readpipe[2])
+void	write_cmd_to_output(t_pipex *p, int readfd)
 {
-	argc -= 4;
-	dup2(readpipe[READ_END], STDIN_FILENO);
-	close_pipe(readpipe);
+	dup2(readfd, STDIN_FILENO);
+	printf("readfd = %i\n", readfd);
+	close(readfd);
 	dup2(p->fd_out, STDOUT_FILENO);
 	close(p->fd_out);
 	close(p->fd_input);
-	if (execve(p->commands[argc][0], p->commands[argc], p->envp) == ERROR)
+	if (execve(p->commands[p->n_cmds - 1][0], p->commands[p->n_cmds -1], p->envp) == ERROR)
 		program_errors(p, "EXECUTION ERROR", TRUE);
 }
 
