@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/12 11:29:19 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/13 14:08:14 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/13 14:15:41 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,13 +77,16 @@ void	write_input_to_cmd(t_pipex *p)
 
 void	write_cmd_to_output(t_pipex *p, int readfd)
 {
+	int	n;
+
+	n = p->n_cmds - 1;
 	dup2(readfd, STDIN_FILENO);
 	printf("readfd = %i\n", readfd);
 	close(readfd);
 	dup2(p->fd_out, STDOUT_FILENO);
 	close(p->fd_out);
 	close(p->fd_input);
-	if (execve(p->commands[p->n_cmds - 1][0], p->commands[p->n_cmds -1], p->envp) == ERROR)
+	if (execve(p->commands[n][0], p->commands[n], p->envp) == ERROR)
 		program_errors(p, "EXECUTION ERROR", TRUE);
 }
 

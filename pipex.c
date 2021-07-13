@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/23 11:21:57 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/13 14:05:33 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/13 14:18:34 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int	main(int argc, char **argv, char **envp)
 	if (p.pid_out == ERROR)
 		program_errors(&p, "FORKING", TRUE);
 	if (p.pid_out == CHILD_PROCESS)
-		write_cmd_to_output(&p, p.pipe2[READ_END]);
+		write_cmd_to_output(&p, prev_pipe);
 	clear_data(&p);
 	wait_error_check(&p, p.pid_out);
 	exit(EXIT_SUCCESS);
