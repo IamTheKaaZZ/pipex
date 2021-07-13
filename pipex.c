@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/23 11:21:57 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/13 14:18:34 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/13 16:16:47 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,52 +50,26 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_pipex	p;
 	int		i;
-	int		prev_pipe;
+	int		prev_fd;
 
 	init_data(&p);
 	check_input(&p, argc, argv, envp);
 	get_commands(&p);
-	open_pipe(&p, p.pipe1);
-	p.pid_in = fork();
-	if (p.pid_in == ERROR)
-		program_errors(&p, "FORKING", TRUE);
-	if (p.pid_in == CHILD_PROCESS)
-		write_input_to_cmd(&p);
-	wait_error_check(&p, p.pid_in);
-	i = 0;
-	prev_pipe = p.pipe1[READ_END];
-	while (++i < p.n_cmds - 1)
+	i = -1;
+	prev_fd = p.fd_input;
+	while (++i < p.n_cmds)
 	{
-		open_pipe(&p, p.pipe2);
+		open_pipe(&p, p.pipe);
 		p.pid_cmd = fork();
 		if (p.pid_cmd == ERROR)
-			program_errors(&p, "FORKING CMD", TRUE);
+			program_errors(&p, "FORKING", TRUE);
 		if (p.pid_cmd == CHILD_PROCESS)
-		{
-			if (prev_pipe != STDIN_FILENO)
-			{
-				dup2(prev_pipe, STDIN_FILENO);
-				close_pipe(p.pipe1);
-			}
-			dup2(p.pipe2[WRITE_END], STDOUT_FILENO);
-			close_pipe(p.pipe2);
-			if (execve(p.commands[i][0], p.commands[i], p.envp) == ERROR)
-				program_errors(&p, "EXECUTION ERROR", TRUE);
-		}
-		close(prev_pipe);
-		close(p.pipe2[WRITE_END]);
-		prev_pipe = p.pipe2[READ_END];
-		printf("i = %d and readfd = %d\n", i, prev_pipe);
+			child_loop(&p, prev_fd, i);
+		close(prev_fd);
+		close(p.pipe[WRITE_END]);
+		prev_fd = p.pipe[READ_END];
+		wait_error_check(&p, p.pid_cmd);
 	}
-	close_pipe(p.pipe1);
-	close(p.pipe2[WRITE_END]);
-		printf("readfd = %d\n", p.pipe2[READ_END]);
-	p.pid_out = fork();
-	if (p.pid_out == ERROR)
-		program_errors(&p, "FORKING", TRUE);
-	if (p.pid_out == CHILD_PROCESS)
-		write_cmd_to_output(&p, prev_pipe);
 	clear_data(&p);
-	wait_error_check(&p, p.pid_out);
 	exit(EXIT_SUCCESS);
 }
