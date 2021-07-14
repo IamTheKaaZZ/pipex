@@ -6,13 +6,13 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/12 11:29:19 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/13 16:07:26 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/14 14:05:35 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
 
-void	child_loop(t_pipex *p, int prev_fd, int i)
+static void	child_loop(t_pipex *p, int prev_fd, int i)
 {
 	if (prev_fd != STDIN_FILENO && i != 0)
 		dup2(prev_fd, STDIN_FILENO);
@@ -27,4 +27,26 @@ void	child_loop(t_pipex *p, int prev_fd, int i)
 	close(p->fd_out);
 	if (execve(p->commands[i][0], p->commands[i], p->envp) == ERROR)
 		program_errors(p, "EXECUTION ERROR", TRUE);
+}
+
+void	pipe_mode(t_pipex *p)
+{
+	int	i;
+	int	prev_fd;
+
+	i = -1;
+	prev_fd = p->fd_input;
+	while (++i < p->n_cmds)
+	{
+		open_pipe(p, p->pipe);
+		p->pid_cmd = fork();
+		if (p->pid_cmd == ERROR)
+			program_errors(p, "FORKING", TRUE);
+		if (p->pid_cmd == CHILD_PROCESS)
+			child_loop(p, prev_fd, i);
+		close(prev_fd);
+		close(p->pipe[WRITE_END]);
+		prev_fd = p->pipe[READ_END];
+		wait_error_check(p, p->pid_cmd);
+	}
 }

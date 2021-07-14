@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/22 09:54:45 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/13 16:08:58 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/14 14:02:03 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,9 @@
 enum
 {
 	FALSE,
-	TRUE
+	TRUE,
+	PIPE,
+	HERE_DOC
 };
 # define WRITE_END 1
 # define READ_END 0
@@ -69,6 +71,6 @@ void	wait_error_check(t_pipex *p, pid_t pid);
 */
 
 void	get_commands(t_pipex *p);
-void	child_loop(t_pipex *p, int prev_fd, int i);
+void	pipe_mode(t_pipex *p);
 
 #endif
