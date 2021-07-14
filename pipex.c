@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/23 11:21:57 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/14 14:02:50 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/14 18:06:36 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,74 +18,64 @@
 **		=> open the fd's for inputfile and outputfile
 **			=> fd_input in READ ONLY mode
 **				- shell command '< file1'
-**			=> fd_out in WRITE ONLY mode (OR CREATE the file f it doesn't exist)
+**			=> fd_out in WRITE ONLY mode (OR CREATE the file if it doesn't exist)
 **				- shell command '> file2'
+**		=> set the mode to PIPE
 **		=> save argc, argv and envp into the struct
-**		=> open the pipe for the program
-**			pipe[0] == fd[0] => Reading end
-**			pipe[1] == fd[1] => Writing end
 */
 
-int	check_input(t_pipex *p, int argc, char **argv, char **envp)
+void	check_pipe_mode(t_pipex *p, int argc, char **argv, char **envp)
 {
-	int	mode;
+	if (access(argv[1], F_OK) == ERROR)
+		usage_error(p, "NO INPUT FILE", TRUE);
+	if (access(argv[1], R_OK) == ERROR)
+		usage_error(p, "NO PERMISSION", TRUE);
+	find_command_paths(p, argc, argv, envp);
+	p->fd_input = open(argv[1], O_RDONLY);
+	if (p->fd_input == ERROR)
+		usage_error(p, "OPENING INPUT FILE", TRUE);
+	p->fd_out = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	if (p->fd_out == ERROR)
+		usage_error(p, "OPENING OUTPUT FILE", TRUE);
+}
 
+void	check_input(t_pipex *p, int argc, char **argv, char **envp)
+{
 	if (argc < 5)
 		usage_error(p, "USAGE", TRUE);
 	if (ft_strequal(argv[1], "here_doc"))
 	{
+		printf("In here doc\n");
+		find_command_paths(p, argc, argv, envp);
 		p->fd_input = STDIN_FILENO;
 		p->fd_out = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0777);
 		if (p->fd_out == ERROR)
 			usage_error(p, "OPENING OUTPUT FILE", TRUE);
-		mode = HERE_DOC;
+		p->limiter = ft_strdup(argv[2]);
 	}
 	else
-	{
-		if (access(argv[1], F_OK) == ERROR)
-			usage_error(p, "NO INPUT FILE", TRUE);
-		if (access(argv[1], R_OK) == ERROR)
-			usage_error(p, "NO PERMISSION", TRUE);
-		find_command_paths(p, argc, argv, envp);
-		p->fd_input = open(argv[1], O_RDONLY);
-		if (p->fd_input == ERROR)
-			usage_error(p, "OPENING INPUT FILE", TRUE);
-		p->fd_out = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0777);
-		if (p->fd_out == ERROR)
-			usage_error(p, "OPENING OUTPUT FILE", TRUE);
-		mode = PIPE;
-	}
+		check_pipe_mode(p, argc, argv, envp);
+	//Excuse me WTF
+	if (ft_strequal(argv[1], "here_doc"))
+		p->mode = 3;
+	else
+		p->mode = 2;
 	p->argc = argc;
 	p->argv = argv;
 	p->envp = envp;
-	return (mode);
 }
 
 int	main(int argc, char **argv, char **envp)
 {
 	t_pipex	p;
-	//int		i;
-	//int		prev_fd;
 
 	init_data(&p);
 	check_input(&p, argc, argv, envp);
 	get_commands(&p);
-	pipe_mode(&p);
-	/*i = -1;
-	prev_fd = p.fd_input;
-	while (++i < p.n_cmds)
-	{
-		open_pipe(&p, p.pipe);
-		p.pid_cmd = fork();
-		if (p.pid_cmd == ERROR)
-			program_errors(&p, "FORKING", TRUE);
-		if (p.pid_cmd == CHILD_PROCESS)
-			child_loop(&p, prev_fd, i);
-		close(prev_fd);
-		close(p.pipe[WRITE_END]);
-		prev_fd = p.pipe[READ_END];
-		wait_error_check(&p, p.pid_cmd);
-	}*/
+	if (p.mode == PIPE)
+		pipe_mode(&p);
+	else if (p.mode == HERE_DOC)
+		here_doc_mode(&p);
 	clear_data(&p);
 	exit(EXIT_SUCCESS);
 }

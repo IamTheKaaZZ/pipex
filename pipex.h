@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/22 09:54:45 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/14 14:02:03 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/14 17:07:05 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ typedef struct s_pipex
 	int		pipe[2];
 	pid_t	pid_cmd;
 	int		wstatus;
+	int		mode;
+	char	*limiter;
 }			t_pipex;
 
 void	init_data(t_pipex *p);
@@ -72,5 +74,6 @@ void	wait_error_check(t_pipex *p, pid_t pid);
 
 void	get_commands(t_pipex *p);
 void	pipe_mode(t_pipex *p);
+void	here_doc_mode(t_pipex *p);
 
 #endif

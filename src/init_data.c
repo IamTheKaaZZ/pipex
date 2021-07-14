@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/23 15:15:10 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/13 15:58:40 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/14 17:28:09 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ void	init_data(t_pipex *p)
 	p->pipe[0] = -1;
 	p->pipe[1] = -1;
 	p->pid_cmd = -1;
+	p->mode = -1;
+	p->limiter = NULL;
 }
 
 /*
@@ -49,6 +51,8 @@ void	clear_data(t_pipex *p)
 	close(p->fd_input);
 	close(p->fd_out);
 	close_pipe(p->pipe);
+	if (p->limiter)
+		ft_strdel(&p->limiter);
 }
 
 void	close_pipe(int *pipe)

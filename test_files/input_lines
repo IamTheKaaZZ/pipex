@@ -1,1 +1,5 @@
+MANDATORY
+./pipex test_files/input_file "ls -l" "wc -c" file2
+BONUS
 ./pipex test_files/input_file "sed 1,2d" "grep j" "sed 1,2d" "sed s/j/LOL_IT_WORKED/" "sed s/IT_/IT_JUST_/" file2
+./pipex here_doc EOF cat "wc -l" file2
