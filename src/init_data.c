@@ -6,13 +6,13 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/23 15:15:10 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/14 17:28:09 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/15 10:57:30 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
 
-void	init_data(t_pipex *p)
+void	init_data(t_pipex *p, char **argv)
 {
 	p->commands = NULL;
 	p->env_paths = NULL;
@@ -22,7 +22,10 @@ void	init_data(t_pipex *p)
 	p->pipe[0] = -1;
 	p->pipe[1] = -1;
 	p->pid_cmd = -1;
-	p->mode = -1;
+	if (ft_strequal(argv[1], "here_doc"))
+		p->mode = HERE_DOC;
+	else
+		p->mode = PIPE;
 	p->limiter = NULL;
 }
 

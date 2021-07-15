@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/23 11:21:57 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/14 18:06:36 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/15 11:04:17 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,8 @@ void	check_input(t_pipex *p, int argc, char **argv, char **envp)
 {
 	if (argc < 5)
 		usage_error(p, "USAGE", TRUE);
-	if (ft_strequal(argv[1], "here_doc"))
+	if (p->mode == HERE_DOC)
 	{
-		printf("In here doc\n");
 		find_command_paths(p, argc, argv, envp);
 		p->fd_input = STDIN_FILENO;
 		p->fd_out = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0777);
@@ -55,11 +54,6 @@ void	check_input(t_pipex *p, int argc, char **argv, char **envp)
 	}
 	else
 		check_pipe_mode(p, argc, argv, envp);
-	//Excuse me WTF
-	if (ft_strequal(argv[1], "here_doc"))
-		p->mode = 3;
-	else
-		p->mode = 2;
 	p->argc = argc;
 	p->argv = argv;
 	p->envp = envp;
@@ -69,7 +63,7 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_pipex	p;
 
-	init_data(&p);
+	init_data(&p, argv);
 	check_input(&p, argc, argv, envp);
 	get_commands(&p);
 	if (p.mode == PIPE)

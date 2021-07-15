@@ -6,13 +6,13 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/23 16:30:27 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/14 18:00:27 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/15 11:09:23 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
 
-static void	check_path_variable(t_pipex *p, char **args, char *err)
+void	check_path_variable(t_pipex *p, char **args, char *err)
 {
 	char	*cmd_path;
 	int		i;
@@ -37,7 +37,7 @@ static void	check_path_variable(t_pipex *p, char **args, char *err)
 	}
 }
 
-static void	valid_command(t_pipex *p, int argc, char **argv)
+void	valid_command(t_pipex *p, int argc, char **argv)
 {
 	char	**cmd_args;
 	int		i;
@@ -47,9 +47,6 @@ static void	valid_command(t_pipex *p, int argc, char **argv)
 		i = 1;
 	else if (p->mode == HERE_DOC)
 		i = 2;
-	else
-		i = 1;
-	printf("i = %d, mode = %d\n", i, p->mode);
 	while (++i < argc - 1)
 	{
 		cmd_args = ft_split(argv[i], ' ');
@@ -84,17 +81,14 @@ void	find_command_paths(t_pipex *p, int argc, char **argv, char **envp)
 **	Add the right path to each command for the 'execve' function
 */
 
-static void	update_command_path(t_pipex *p, char **cmd_arg)
+void	update_command_path(t_pipex *p, char **cmd_arg)
 {
 	char	*cmd_path;
 	int		i;
 
-	printf("%s\n", *cmd_arg);
 	i = -1;
 	while (p->env_paths[++i])
 	{
-	printf("%s\n", p->env_paths[i]);
-	printf("%s\n", *cmd_arg);
 		cmd_path = ft_strjoin(p->env_paths[i], *cmd_arg);
 		if (access(cmd_path, X_OK) != -1)
 		{
@@ -126,8 +120,6 @@ void	get_commands(t_pipex *p)
 		i = 1;
 	else if (p->mode == HERE_DOC)
 		i = 2;
-	else
-		i = 1;
 	j = -1;
 	while (++i < p->argc - 1)
 	{

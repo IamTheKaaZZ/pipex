@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/22 09:54:45 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/14 17:07:05 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/15 11:03:15 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ typedef struct s_pipex
 	char	*limiter;
 }			t_pipex;
 
-void	init_data(t_pipex *p);
+void	init_data(t_pipex *p, char **argv);
 void	clear_data(t_pipex *p);
 void	open_pipe(t_pipex *p, int fd[2]);
 void	close_pipe(int *pipe);
