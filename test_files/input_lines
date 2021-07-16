@@ -3,3 +3,5 @@ MANDATORY
 BONUS
 ./pipex test_files/input_file "sed 1,2d" "grep j" "sed 1,2d" "sed s/j/LOL_IT_WORKED/" "sed s/IT_/IT_JUST_/" file2
 ./pipex here_doc EOF cat "wc -l" file2
+(SUPPORTS MULTIPLE CMDS TO PIPE)
+./pipex here_doc EOF cat "grep e" "wc -l" file2

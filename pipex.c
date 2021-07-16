@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/23 11:21:57 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/15 11:04:17 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/16 13:23:56 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	check_input(t_pipex *p, int argc, char **argv, char **envp)
 	if (p->mode == HERE_DOC)
 	{
 		find_command_paths(p, argc, argv, envp);
-		p->fd_input = STDIN_FILENO;
+		p->fd_input = open("inputstream.txt", O_WRONLY | O_CREAT, 0777);
 		p->fd_out = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0777);
 		if (p->fd_out == ERROR)
 			usage_error(p, "OPENING OUTPUT FILE", TRUE);
