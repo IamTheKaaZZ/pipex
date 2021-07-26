@@ -6,11 +6,16 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/23 15:15:10 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/15 10:57:30 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/26 11:31:44 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
+
+/*
+**	Initialize the variables of the pipex struct
+**	=> Check for the mode in argv[1]
+*/
 
 void	init_data(t_pipex *p, char **argv)
 {
@@ -30,7 +35,8 @@ void	init_data(t_pipex *p, char **argv)
 }
 
 /*
-**	Open the pipe for the processes
+**	Open a pipe for the child processes
+**	=>	Return an error if pipe(fd) == -1
 */
 
 void	open_pipe(t_pipex *p, int fd[2])
@@ -38,6 +44,12 @@ void	open_pipe(t_pipex *p, int fd[2])
 	if (pipe(fd) == ERROR)
 		program_errors(p, "OPENING PIPE", TRUE);
 }
+
+/*
+**	Clear all data and allocated memory if it was not free'd before
+**	=> Free allocated memory
+**	=> Close file descriptors if they are still open
+*/
 
 void	clear_data(t_pipex *p)
 {
@@ -56,12 +68,22 @@ void	clear_data(t_pipex *p)
 	close_pipe(p->pipe);
 	if (p->limiter)
 		ft_strdel(&p->limiter);
+	if (access("inputstream.txt", X_OK) != -1)
+	{
+		if (unlink("inputstream.txt") == ERROR)
+			usage_error(p, "UNLINKING INPUTSTREAM", TRUE);
+	}
 }
+
+/*
+**	Close a given pipe from both ends
+**	=> Set them back to -1 for later use
+*/
 
 void	close_pipe(int *pipe)
 {
-	close (pipe[READ_END]);
-	close (pipe[WRITE_END]);
+	close(pipe[READ_END]);
+	close(pipe[WRITE_END]);
 	pipe[READ_END] = -1;
 	pipe[WRITE_END] = -1;
 }

@@ -6,11 +6,17 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/23 11:52:17 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/12 12:50:47 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/26 10:13:11 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
+
+/*
+**	Function used to throw errors related to USAGE
+**	1. Throws specific error depending on call
+**	2. If stop is TRUE, it will clear all data before exiting
+*/
 
 void	usage_error(t_pipex *p, char *usage_name, t_bool stop)
 {
@@ -38,6 +44,12 @@ void	usage_error(t_pipex *p, char *usage_name, t_bool stop)
 	}
 }
 
+/*
+**	Function to throw specific errors during program runtime
+**	1.	Send errname to perror
+**	2. If stop is TRUE, it will clear all data before exiting
+*/
+
 void	program_errors(t_pipex *p, char *errname, t_bool stop)
 {
 	perror(errname);
@@ -47,6 +59,12 @@ void	program_errors(t_pipex *p, char *errname, t_bool stop)
 		exit(EXIT_FAILURE);
 	}
 }
+
+/*
+**	Function to check for error related to the waitpid function
+**	1.	Error if waitpid returns -1
+**	2.	Check wstatus, if it's not 0, the command in the child process failed
+*/
 
 void	wait_error_check(t_pipex *p, pid_t pid)
 {

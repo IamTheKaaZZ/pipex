@@ -6,11 +6,11 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/23 12:39:56 by bcosters          #+#    #+#             */
-/*   Updated: 2021/06/23 12:42:41 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/26 10:06:29 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../libft_bonus.h"
+#include "../libft_bonus.h"
 
 /*
 **	Free and NULL an array of strings with the last element being NULL-pointer

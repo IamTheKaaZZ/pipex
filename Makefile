@@ -6,7 +6,7 @@
 #    By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/15 11:35:49 by bcosters          #+#    #+#              #
-#    Updated: 2021/06/23 11:36:56 by bcosters         ###   ########.fr        #
+#    Updated: 2021/07/26 11:39:11 by bcosters         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -51,12 +51,12 @@ lib:
 $(NAME):	lib $(OBJDR) $(OBJS) $(HEADER)
 			@$(CC) $(CFLAGS) $(MAINSRC) ${wildcard src/*.c} -L$(LIBFTDR) -lft -o $(NAME)
 			#--------------------------------#
-			@echo "Finished compiling $(NAME)"
+			@echo "Finished compiling MANDATORY $(NAME)"
 
-bonus:		$(NAME)
-			@$(CC) $(CFLAGS) $(CHECKSRC) ${wildcard src/*.c} -L$(LIBFTDR) -lft -o $(CHECK)
+bonus:		lib $(OBJDR) $(OBJS) $(HEADER)
+			@$(CC) $(CFLAGS) $(MAINSRC) ${wildcard src/*.c} -L$(LIBFTDR) -lft -o $(NAME)
 			#--------------------------------#
-			@echo "Finished compiling $(CHECK)"
+			@echo "Finished compiling BONUS $(NAME)"
 
 $(OBJDR):
 			@mkdir -p $(OBJDR)

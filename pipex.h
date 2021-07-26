@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/22 09:54:45 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/15 11:03:15 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/07/26 11:36:08 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,8 @@ void	wait_error_check(t_pipex *p, pid_t pid);
 
 /*
 **	Main program
+**	1.	pipe_mode for both MANDATORY AND BONUS
+**	2.	here_doc_mode for BONUS
 */
 
 void	get_commands(t_pipex *p);

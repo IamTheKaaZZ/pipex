@@ -1,55 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   read_write_in_out.c                                :+:      :+:    :+:   */
+/*   here_doc_bonus.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/07/12 11:29:19 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/16 13:38:02 by bcosters         ###   ########.fr       */
+/*   Created: 2021/07/26 11:41:19 by bcosters          #+#    #+#             */
+/*   Updated: 2021/07/26 11:42:36 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
 
-static void	child_loop_pipe(t_pipex *p, int prev_fd, int i)
-{
-	if (prev_fd != STDIN_FILENO && i != 0)
-		dup2(prev_fd, STDIN_FILENO);
-	else
-		dup2(p->fd_input, STDIN_FILENO);
-	if (i != p->n_cmds - 1)
-		dup2(p->pipe[WRITE_END], STDOUT_FILENO);
-	else
-		dup2(p->fd_out, STDOUT_FILENO);
-	close_pipe(p->pipe);
-	close(p->fd_input);
-	close(p->fd_out);
-	if (execve(p->commands[i][0], p->commands[i], p->envp) == ERROR)
-		program_errors(p, "EXECUTION ERROR", TRUE);
-}
-
-void	pipe_mode(t_pipex *p)
-{
-	int	i;
-	int	prev_fd;
-
-	i = -1;
-	prev_fd = p->fd_input;
-	while (++i < p->n_cmds)
-	{
-		open_pipe(p, p->pipe);
-		p->pid_cmd = fork();
-		if (p->pid_cmd == ERROR)
-			program_errors(p, "FORKING", TRUE);
-		if (p->pid_cmd == CHILD_PROCESS)
-			child_loop_pipe(p, prev_fd, i);
-		close(prev_fd);
-		close(p->pipe[WRITE_END]);
-		prev_fd = p->pipe[READ_END];
-		wait_error_check(p, p->pid_cmd);
-	}
-}
+/*
+**	Check the return value of GNL and add the lines to readstr (WITH '\n')
+**	1.	If there is an error or we have reached EOF before reading the LIMITER
+**		=> Case: Error => Input error
+**		=> Case: EOF before LIMITER
+**	2.	No error
+**		=> Add the line to readstr WITH a '\n' (GNL removes it)
+**		=> free the line
+*/
 
 static void	check_retval(t_pipex *p, int retval, char **line, char **readstr)
 {
@@ -72,6 +43,14 @@ static void	check_retval(t_pipex *p, int retval, char **line, char **readstr)
 	}
 }
 
+/*
+**	1.	Open the temporary file/inputstream in READ_ONLY mode
+**		=>	Check for errors
+**	2.	Call pipe_mode since it's the same situation now as MANDATORY
+**	3.	We use unlink to destroy the temporary file/inputstream and close its fd
+**		=>	Check for errors
+*/
+
 static void	open_pipe_unlink(t_pipex *p, char *inputstream)
 {
 	p->fd_input = open(inputstream, O_RDONLY);
@@ -81,6 +60,30 @@ static void	open_pipe_unlink(t_pipex *p, char *inputstream)
 	if (unlink(inputstream) == ERROR)
 		usage_error(p, "UNLINKING INPUTSTREAM", TRUE);
 }
+
+/*
+**	What is a here_doc? => https://en.wikipedia.org/wiki/Here_document
+**	In this BONUS part we emulate the behaviour of a Here Document
+**	=> In a shell script a heredoc can supply a command with the necessary data
+**	=> That command keeps reading until it finds the LIMITER, then it stops
+**	=> CLASSIC case: "<< cat EOF" => keep reading until you find ONLY "EOF"
+**	=> Extra part of the bonus is ">>" AKA appending to an existing file
+**
+**	1.	We read lines from STDIN_FILENO (0) until we find the LIMITER
+**	=>	 Janky hack incoming:
+**		We create a temporary file to hold the data: "inputstream.txt"
+**	2.	Read the first line and check it and retval before going into a loop
+**		=> Add it to readstr
+**	3.	WHILE (GNL != 0 or -1)
+**		3.1	Read the next line
+**		3.2	Check if it is the LIMITER => STOP if it is and don't save that line
+**		3.3	Check the retval of GNL => add it to readstr if it's OK
+**	4.	If no errors occurred and the LIMITER was found
+**		=> write readstr into the temporary file
+**		=> close its fd
+**		=> free the allocated memory
+**	5.	Call open_pipe_unlink
+*/
 
 void	here_doc_mode(t_pipex *p)
 {
