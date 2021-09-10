@@ -6,7 +6,7 @@
 #    By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/02/08 10:32:48 by bcosters          #+#    #+#              #
-#    Updated: 2021/06/18 17:43:35 by bcosters         ###   ########.fr        #
+#    Updated: 2021/09/10 12:13:36 by bcosters         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -49,7 +49,7 @@ OBJDIR = obj/
 #	Implicit rules
 
 ${OBJDIR}%.o : src/%.c
-			@echo Compiling object $@
+			@printf "#"
 			@$(CC) -c $(CFLAGS) $< -o $@
 
 #	Normal rules
@@ -66,10 +66,9 @@ bonus:		fclean $(OBJDIR) $(OBJS_BONUS) $(HEADER)
 			@ar rcs $(NAME) $(OBJS_BONUS)
 			@echo FINISHED: Compiling MANDATORY AND BONUS LIBFT
 
-$(NAME):	$(OBJDIR) ${OBJS_OWN} ${HEADERS_OWN}
-			@echo "Compiling COMPLETE LIBFT (ALL + OWN FUNCTIONS)"
+$(NAME):	progress $(OBJDIR) ${OBJS_OWN} ${HEADERS_OWN}
 			@ar rcs ${NAME} ${OBJS_OWN}
-			@echo "FINISHED: Compiling COMPLETE LIBFT (ALL + OWN FUNCTIONS)"
+			@echo "]\nFINISHED: Compiling COMPLETE LIBFT (ALL + OWN FUNCTIONS)"
 
 $(OBJS):		| $(OBJDIR)
 $(OBJS_BONUS):	| $(OBJDIR)
@@ -77,6 +76,10 @@ $(OBJS_OWN):	| $(OBJDIR)
 
 $(OBJDIR):
 			mkdir -p $(OBJDIR)
+
+progress:
+			@printf "Compiling COMPLETE LIBFT (ALL + OWN FUNCTIONS)\n["
+
 
 .PHONY:		clean
 

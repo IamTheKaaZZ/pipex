@@ -6,7 +6,7 @@
 #    By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/15 11:35:49 by bcosters          #+#    #+#              #
-#    Updated: 2021/07/26 11:39:11 by bcosters         ###   ########.fr        #
+#    Updated: 2021/09/10 12:20:18 by bcosters         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,7 +37,7 @@ CFLAGS	= -Wall -Wextra -Werror
 			@$(CC) $(CFLAGS) -c $< -o $@
 
 obj/%.o: src/%.c
-			@echo Compiling object $@
+			@printf "#"
 			@$(CC) $(CFLAGS) -c $< -o $@
 
 #	Active rules
@@ -48,15 +48,18 @@ all:		$(NAME)
 lib:
 			@$(MAKE) --silent -C $(LIBFTDR)
 
-$(NAME):	lib $(OBJDR) $(OBJS) $(HEADER)
+$(NAME):	lib progress $(OBJDR) $(OBJS) $(HEADER)
 			@$(CC) $(CFLAGS) $(MAINSRC) ${wildcard src/*.c} -L$(LIBFTDR) -lft -o $(NAME)
-			#--------------------------------#
-			@echo "Finished compiling MANDATORY $(NAME)"
+			@printf "]\n"
+			@echo "FINISHED: Compiling MANDATORY $(NAME)"
 
-bonus:		lib $(OBJDR) $(OBJS) $(HEADER)
+bonus:		lib progress $(OBJDR) $(OBJS) $(HEADER)
 			@$(CC) $(CFLAGS) $(MAINSRC) ${wildcard src/*.c} -L$(LIBFTDR) -lft -o $(NAME)
-			#--------------------------------#
-			@echo "Finished compiling BONUS $(NAME)"
+			@printf "]\n"
+			@echo "FINISHED: Compiling BONUS $(NAME)"
+
+progress:
+			@printf "Compiling executable $(NAME)\n["
 
 $(OBJDR):
 			@mkdir -p $(OBJDR)
