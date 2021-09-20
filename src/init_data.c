@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/23 15:15:10 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/26 11:31:44 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/20 12:11:01 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,10 @@ void	clear_data(t_pipex *p)
 		i = -1;
 		while (p->commands[++i])
 			ft_str_array_del(&p->commands[i]);
+		free(p->commands);
+		p->commands = NULL;
 	}
-	else if (p->env_paths)
+	if (p->env_paths)
 		ft_str_array_del(&p->env_paths);
 	close(p->fd_input);
 	close(p->fd_out);

@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/23 16:30:27 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/26 10:05:42 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/20 12:19:10 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,8 @@ void	valid_command(t_pipex *p, int argc, char **argv)
 
 void	find_command_paths(t_pipex *p, int argc, char **argv, char **envp)
 {
-	int	i;
+	int		i;
+	char	*joined;
 
 	i = -1;
 	while (envp[++i])
@@ -95,12 +96,14 @@ void	find_command_paths(t_pipex *p, int argc, char **argv, char **envp)
 		if (!ft_strncmp(envp[i], "PATH=", 5))
 			break ;
 	}
-	p->env_paths = ft_split(envp[i], ':');
-	p->env_paths[0] = ft_substr(p->env_paths[0], 5,
-			ft_strlen(p->env_paths[0] - 5));
+	p->env_paths = ft_split(envp[i] + 5, ':');
 	i = -1;
 	while (p->env_paths[++i])
-		p->env_paths[i] = ft_strjoin_char(p->env_paths[i], '/');
+	{
+		joined = ft_strjoin_char(p->env_paths[i], '/');
+		ft_strdel(&p->env_paths[i]);
+		p->env_paths[i] = joined;
+	}
 	i = -1;
 	valid_command(p, argc, argv);
 }
@@ -125,6 +128,7 @@ void	update_command_path(t_pipex *p, char **cmd_arg)
 		cmd_path = ft_strjoin(p->env_paths[i], *cmd_arg);
 		if (access(cmd_path, X_OK) != -1)
 		{
+			ft_strdel(cmd_arg);
 			*cmd_arg = cmd_path;
 			break ;
 		}

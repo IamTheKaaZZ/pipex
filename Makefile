@@ -6,7 +6,7 @@
 #    By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/15 11:35:49 by bcosters          #+#    #+#              #
-#    Updated: 2021/09/10 12:20:18 by bcosters         ###   ########.fr        #
+#    Updated: 2021/09/20 12:41:03 by bcosters         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,6 +18,7 @@ NAME	= pipex
 
 OBJDR	= obj/
 LIBFTDR	= libft/
+MEMDR
 
 HEADER	= pipex.h
 
@@ -28,6 +29,7 @@ OBJS	= ${SRCS:src/%.c=obj/%.o}
 CC		= gcc
 RM		= rm -f
 CFLAGS	= -Wall -Wextra -Werror
+LFLAGS	= -L$(LIBFTDR) -lft #-L42_memleak_check/ -lmlc
 
 # -*- The Rules -*-
 
@@ -49,7 +51,7 @@ lib:
 			@$(MAKE) --silent -C $(LIBFTDR)
 
 $(NAME):	lib progress $(OBJDR) $(OBJS) $(HEADER)
-			@$(CC) $(CFLAGS) $(MAINSRC) ${wildcard src/*.c} -L$(LIBFTDR) -lft -o $(NAME)
+			@$(CC) $(CFLAGS) $(MAINSRC) ${wildcard src/*.c} $(LFLAGS) -o $(NAME)
 			@printf "]\n"
 			@echo "FINISHED: Compiling MANDATORY $(NAME)"
 
