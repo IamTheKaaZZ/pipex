@@ -6,7 +6,7 @@
 #    By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/15 11:35:49 by bcosters          #+#    #+#              #
-#    Updated: 2021/09/20 12:41:03 by bcosters         ###   ########.fr        #
+#    Updated: 2021/09/20 13:27:41 by bcosters         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,6 @@ NAME	= pipex
 
 OBJDR	= obj/
 LIBFTDR	= libft/
-MEMDR
 
 HEADER	= pipex.h
 
