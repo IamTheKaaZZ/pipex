@@ -6,7 +6,7 @@
 #    By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/15 11:35:49 by bcosters          #+#    #+#              #
-#    Updated: 2021/09/20 13:27:41 by bcosters         ###   ########.fr        #
+#    Updated: 2021/09/20 13:46:55 by bcosters         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,7 @@ OBJS	= ${SRCS:src/%.c=obj/%.o}
 CC		= gcc
 RM		= rm -f
 CFLAGS	= -Wall -Wextra -Werror
-LFLAGS	= -L$(LIBFTDR) -lft #-L42_memleak_check/ -lmlc
+LFLAGS	= -L$(LIBFTDR) -lft -L42_memleak_check/ -lmlc
 
 # -*- The Rules -*-
 

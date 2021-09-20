@@ -6,13 +6,13 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/23 11:21:57 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/20 13:28:12 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/20 13:46:35 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-// #include "42_memleak_check/malloc_leak_checker.h"
+#include "42_memleak_check/malloc_leak_checker.h"
 
 /*
 **	Check the input for errors and give error messages accordingly
@@ -105,5 +105,6 @@ int	main(int argc, char **argv, char **envp)
 	else if (p.mode == HERE_DOC)
 		here_doc_mode(&p);
 	clear_data(&p);
+	check_leaks();
 	exit(EXIT_SUCCESS);
 }

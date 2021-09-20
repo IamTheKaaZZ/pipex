@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/26 11:41:19 by bcosters          #+#    #+#             */
-/*   Updated: 2021/07/26 11:42:36 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/20 13:52:42 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,9 @@
 
 static void	check_retval(t_pipex *p, int retval, char **line, char **readstr)
 {
+	char	*buffer;
+	char	*join;
+
 	if (retval == ERROR || retval == 0)
 	{
 		if (*line)
@@ -37,8 +40,11 @@ static void	check_retval(t_pipex *p, int retval, char **line, char **readstr)
 	}
 	else if (retval == 1)
 	{
-		*readstr = ft_strjoin(*readstr, *line);
-		*readstr = ft_strjoin_char(*readstr, '\n');
+		buffer = *readstr;
+		join = ft_strjoin(*readstr, *line);
+		*readstr = ft_strjoin_char(join, '\n');
+		ft_strdel(&buffer);
+		ft_strdel(&join);
 		ft_strdel(line);
 	}
 }
